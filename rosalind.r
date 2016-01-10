@@ -21,7 +21,7 @@ pdom <- function(k,m,n){
 }
 
 rfib <- function(n,k){
-  if (n < 1) return(1)
+  if (n < 2) return(1)
   a <- 1
   b <- 0
   for (i in 1:(n-1)) {
@@ -38,7 +38,7 @@ high.gc <- function(x){   #"FastaFile.txt" -> "ID ##.#####"  Produces ID and GC 
     return(100 * length(grep("[GC]", s1)) / length(s1))
   }
   fdf <- function(x){     #"FastaFile.txt" -> data.frame with Sequence IDs as row names.  All Sequences under Sequence column
-    rsf = readLines(x)
+    rsf = readLines(x)    # rsf = result-so-far
     rsf = strsplit(gsub("([ACGT])\\n([ACGT])", "\\1\\2", paste0(rsf, collapse="\n")), split="\n")[[1]]
     ids = grepl("^>", rsf)
     return(data.frame(row.names = sub(">", "", rsf[ids]), Sequence = rsf[!ids], stringsAsFactors = F))
