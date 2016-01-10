@@ -49,3 +49,52 @@ high.gc <- function(x){   #"FastaFile.txt" -> "ID ##.#####"  Produces ID and GC 
   n = apply(rsf, 2, which.max)
   return(cat(row.names(rsf)[n], rsf[n,]))
 }
+
+aas <- c("GC[ACGU]", "UG[UC]", "GA[UC]", "GA[AG]", "UU[UC]", "GG[ACGU]", "CA[UC]", "AU[ACU]", "AA[AG]", "UU[AG]|CU[ACGU]", "AUG", "AA[UC]", "CC[ACGU]", "CA[AG]", "CG[ACGU]|AG[AG]", "UC[ACGU]|AG[UC]", "AC[ACGU]", "GU[ACGU]", "UGG", "UA[UC]", "UA[AG]|UGA")
+
+codon <- function(x) {
+  x <- strsplit(x, split = "")[[1]]
+  
+  if (x[1] == "A"){
+    if (x[2] == "A"){
+      if (x[3] == )
+    } else if (x[2] == "C"){
+      
+    } else if (x[2] == "G"){
+      
+    } else if (x[2] == "U"){
+      
+    }
+  } else if (x[1] == "C"){
+    if (x[2] == "A"){
+      
+    } else if (x[2] == "C"){
+      
+    } else if (x[2] == "G"){
+      
+    } else if (x[2] == "U"){
+      
+    }
+    
+  } else if (x[1] == "G"){
+    if (x[2] == "A"){
+      
+    } else if (x[2] == "C"){
+      
+    } else if (x[2] == "G"){
+      
+    } else if (x[2] == "U"){
+      
+    }
+  } else if (x[1] == "U"){
+    if (x[2] == "A"){
+      
+    } else if (x[2] == "C"){
+      
+    } else if (x[2] == "G"){
+      
+    } else if (x[2] == "U"){
+      
+    }
+  }
+}
