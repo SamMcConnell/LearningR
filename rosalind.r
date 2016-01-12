@@ -50,51 +50,48 @@ high.gc <- function(x){   #"FastaFile.txt" -> "ID ##.#####"  Produces ID and GC 
   return(cat(row.names(rsf)[n], rsf[n,]))
 }
 
-aas <- c("GC[ACGU]", "UG[UC]", "GA[UC]", "GA[AG]", "UU[UC]", "GG[ACGU]", "CA[UC]", "AU[ACU]", "AA[AG]", "UU[AG]|CU[ACGU]", "AUG", "AA[UC]", "CC[ACGU]", "CA[AG]", "CG[ACGU]|AG[AG]", "UC[ACGU]|AG[UC]", "AC[ACGU]", "GU[ACGU]", "UGG", "UA[UC]", "UA[AG]|UGA")
-
-codon <- function(x) {
-  x <- strsplit(x, split = "")[[1]]
+translate <- function(x) {
+  sst <- strsplit(x, split="")[[1]]
+  off <- length(sst)%%3
   
-  if (x[1] == "A"){
-    if (x[2] == "A"){
-      if (x[3] == )
-    } else if (x[2] == "C"){
-      
-    } else if (x[2] == "G"){
-      
-    } else if (x[2] == "U"){
-      
-    }
-  } else if (x[1] == "C"){
-    if (x[2] == "A"){
-      
-    } else if (x[2] == "C"){
-      
-    } else if (x[2] == "G"){
-      
-    } else if (x[2] == "U"){
-      
-    }
-    
-  } else if (x[1] == "G"){
-    if (x[2] == "A"){
-      
-    } else if (x[2] == "C"){
-      
-    } else if (x[2] == "G"){
-      
-    } else if (x[2] == "U"){
-      
-    }
-  } else if (x[1] == "U"){
-    if (x[2] == "A"){
-      
-    } else if (x[2] == "C"){
-      
-    } else if (x[2] == "G"){
-      
-    } else if (x[2] == "U"){
-      
-    }
+  if (off != 0){
+    sst <- head(sst, -(off))
   }
+  
+  sst <- paste0(sst[c(T,F,F)], sst[c(F,T,F)], sst[c(F,F,T)])
+  
+  codon <- function(x) {
+    aas <- c("GC[ACGU]", "UG[UC]", "GA[UC]", "GA[AG]", "UU[UC]", "GG[ACGU]", "CA[UC]", "AU[ACU]", "AA[AG]", "UU[AG]|CU[ACGU]", "AUG", "AA[UC]", "CC[ACGU]", "CA[AG]", "CG[ACGU]|AG[AG]", "UC[ACGU]|AG[UC]", "AC[ACGU]", "GU[ACGU]", "UGG", "UA[UC]", "UA[AG]|UGA")
+    aas1 <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "")
+    temp = as.logical(sapply(aas, regexpr, x) + 1)
+    return(aas1[temp])
+  }
+  
+  return(paste0(sapply(sst, codon), collapse=""))
 }
+
+hamm <- function(s, t) {
+  s <- strsplit(s, split="")[[1]]
+  t <- strsplit(t, split="")[[1]]
+  r <- s != t
+  return(length(s[r]))
+}
+
+subs <- function(x, y){
+  xlen <- nchar(x)
+  ylen <- nchar(y)
+  count <- numeric()
+  count2 <- 0
+  
+  for (xlen in 1:ylen) {
+  if (regexpr(x, y)[1] == -1) break
+  count2 <- count2 + regexpr(x, y)[1]
+  count <- append(count, count2)
+  y <- substr(y, (regexpr(x, y)[1] + 1), nchar(y))
+  ylen <- nchar(y)
+  }
+  
+  return(count)
+}
+
+
