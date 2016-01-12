@@ -8,7 +8,7 @@ transcribe <- function(x){
   return(paste0(x, collapse=""))
 }
 
-revc <- function(x){
+revc <- function(x){ # Returns the reverse compliment of a string of DNA
   x <- rev(strsplit(x, split="")[[1]])
   x <- c("T", "G", "C", "A")[match(x, c("A", "C", "G", "T"))]
   return(paste0(x, collapse=""))
@@ -50,7 +50,7 @@ high.gc <- function(x){   #"FastaFile.txt" -> "ID ##.#####"  Produces ID and GC 
   return(cat(row.names(rsf)[n], rsf[n,]))
 }
 
-translate <- function(x) {
+translate <- function(x) { # Translates an RNA sequence to an amino acid sequence
   sst <- strsplit(x, split="")[[1]]
   off <- length(sst)%%3
   
@@ -60,7 +60,7 @@ translate <- function(x) {
   
   sst <- paste0(sst[c(T,F,F)], sst[c(F,T,F)], sst[c(F,F,T)])
   
-  codon <- function(x) {
+  codon <- function(x) { # Translates a codon to its appropriate amino acid
     aas <- c("GC[ACGU]", "UG[UC]", "GA[UC]", "GA[AG]", "UU[UC]", "GG[ACGU]", "CA[UC]", "AU[ACU]", "AA[AG]", "UU[AG]|CU[ACGU]", "AUG", "AA[UC]", "CC[ACGU]", "CA[AG]", "CG[ACGU]|AG[AG]", "UC[ACGU]|AG[UC]", "AC[ACGU]", "GU[ACGU]", "UGG", "UA[UC]", "UA[AG]|UGA")
     aas1 <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "")
     temp = as.logical(sapply(aas, regexpr, x) + 1)
@@ -70,14 +70,14 @@ translate <- function(x) {
   return(paste0(sapply(sst, codon), collapse=""))
 }
 
-hamm <- function(s, t) {
+hamm <- function(s, t) { # Returns the number of substitutions between two sequences of the same length
   s <- strsplit(s, split="")[[1]]
   t <- strsplit(t, split="")[[1]]
   r <- s != t
   return(length(s[r]))
 }
 
-subs <- function(x, y){
+subs <- function(x, y){ # Returns the positions the pattern X appears in Y, including overlapping positions (gregexpr does not account for overlapping patterns in Y).
   xlen <- nchar(x)
   ylen <- nchar(y)
   count <- numeric()
@@ -96,4 +96,21 @@ subs <- function(x, y){
 
 iev <- function(a, b, c, d, e, f){
   return(2*(a+b+c) + 1.5*d + e)
+}
+
+fibd <- function(n, m){ # Returns the population after n rounds of growth
+  # Each round of growth takes one month.  Each organism dies after m months
+  # An organism can only reproduce if it is older than 1 month
+  # The number of offspring introduced in a month is equal to the total of all reproductively active organisms
+  
+  month = 1
+  age.dist = vector(mode = "integer", length = m) # Age distribution over the ages of 0, 1, 2, ... m-2, m-1 months (m not included, as they would be dead)
+  age.dist[1] = 1
+  
+  for (month in 1:(n-1)){
+    offspring = sum(tail(age.dist, -1))
+    age.dist = append(offspring, head(age.dist, -1))
+  }
+  
+  return(sum(age.dist))
 }
