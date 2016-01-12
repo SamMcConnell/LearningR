@@ -94,4 +94,6 @@ subs <- function(x, y){
   return(count)
 }
 
-
+iev <- function(a, b, c, d, e, f){
+  return(2*(a+b+c) + 1.5*d + e)
+}
