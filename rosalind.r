@@ -100,12 +100,12 @@ iev <- function(a, b, c, d, e, f){
 
 fibd <- function(n, m){ # Returns the population after n rounds of growth
   # Each round of growth takes one month.  Each organism dies after m months
-  # An organism can only reproduce if it is older than 1 month
+  # An organism can only reproduce if it is older than 0 months
   # The number of offspring introduced in a month is equal to the total of all reproductively active organisms
   
-  month = 1
-  age.dist = vector(mode = "integer", length = m) # Age distribution over the ages of 0, 1, 2, ... m-2, m-1 months (m not included, as they would be dead)
-  age.dist[1] = 1
+  if (n == 1) return(1)
+  age.dist = as.bigz(vector(mode = "integer", length = m)) # Age distribution over the ages of 0, 1, 2, ... m-2, m-1 months (m not included, as they would be dead)
+  age.dist[1] = 1L    # All populations are assumed to start with 1 reproductively immature organism
   
   for (month in 1:(n-1)){
     offspring = sum(tail(age.dist, -1))
@@ -114,3 +114,18 @@ fibd <- function(n, m){ # Returns the population after n rounds of growth
   
   return(sum(age.dist))
 }
+
+codon.count <- function(x) {
+  x <- append(strsplit(x, split = "")[[1]], "stop")
+  codons <- c(4, 2, 2, 2, 2, 4, 2, 3, 2, 6, 1, 2, 4, 2, 6, 6, 4, 4, 1, 2, 3)
+  amino.acids <- c("A", "C", "D", "E", "F", "G", "H", "I", "K", "L", "M", "N", "P", "Q", "R", "S", "T", "V", "W", "Y", "stop")
+  x <- codons[match(x, amino.acids)]
+  x <- unlist(lapply(split(x, ceiling(seq_along(x)/14)), prod)) %% 1000000
+  if(length(x)==1) return(unname(x))
+  for (i in 2:length(x)) {
+    x[i] <- (x[i]*x[i-1]) %% 1000000
+    x[i-1] <- 0
+  }
+  return(unname(x[length(x)]))
+}
+
